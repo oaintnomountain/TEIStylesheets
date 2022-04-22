@@ -544,20 +544,11 @@
  <xsl:template match="tei:div" mode="pass2">
   <xsl:copy>
    <xsl:for-each-group select="tei:p[@rend='epigraph' or @rend='Epigraph']" group-adjacent="name( )">
-    <xsl:choose>
-     <xsl:when test="self::tei:p[@rend='epigraph' or @rend='Epigraph']">
-      <epigraph>
-       <xsl:apply-templates select="current-group()" mode="pass2"/>
-      </epigraph>
-     </xsl:when>
-    
-     <xsl:otherwise>
-      <xsl:apply-templates select="current-group()" mode="pass2"/>
-     </xsl:otherwise>
-     
-    </xsl:choose>  
+    <epigraph>
+     <xsl:apply-templates select="current-group()" mode="pass2"/>
+    </epigraph>
    </xsl:for-each-group>
-    <xsl:apply-templates mode="pass2"/>
+   <xsl:apply-templates select="*[not(self::tei:p[@rend='epigraph' or @rend='Epigraph'])]" mode="pass2"/>
   </xsl:copy>
  </xsl:template> 
 

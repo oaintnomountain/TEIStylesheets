@@ -631,77 +631,12 @@
   </p>
  </xsl:template> -->
 
-<!-- join consecutive epigraph elements into one epigraph element with paragraphs -->
+<!-- join consecutive epigraph elements into one epigraph element with paragraphs 
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc>join consecutive epigraph elements into one epigraph element with paragraphs</desc>
  </doc>
-
- <!--
- <xsl:template match="tei:div" mode="pass3">
-  <xsl:copy>
-   <xsl:for-each-group select="tei:epigraph/node()" group-adjacent="if (. instance of element()) then node-name(.) else false()">
-    <xsl:choose>
-     <xsl:when test="current-grouping-key() instance of xs:QName">
-      <p>
-      <xsl:element name="{current-grouping-key()}">
-       <xsl:copy-of select="current-group()/node()"/>
-      </xsl:element>
-      </p>
-     </xsl:when>
-     <xsl:otherwise>
-      <xsl:copy-of select="current-group()"/>
-     </xsl:otherwise>
-    </xsl:choose>
-   </xsl:for-each-group>
-  </xsl:copy>
- </xsl:template>
+-->
  
- 
-
- <xsl:template match="tei:epigraph" mode="pass3">
-  <xsl:choose>
-   <xsl:when test="./following-sibling::tei:epigraph">
-    <epigraph>
-     <xsl:for-each-group group-ending-with="tei:epigraph" select="node()">
-      <p> XXX <xsl:copy-of select="current-group()/node()"/></p>
-     </xsl:for-each-group>
-      <p> <xsl:copy-of select="./node()"/></p> 
-     <p> <xsl:copy-of select="./following-sibling::node()"/></p> 
-    </epigraph>
-   </xsl:when>
-  </xsl:choose>
- </xsl:template> -->
-
- <!-- 
- <xsl:template match="tei:epigraph" mode="pass3">
-    <tei:epigraph>
-     <xsl:for-each-group group-by="tei:epigraph" select=".">
-      <p>
-       <xsl:copy-of select="current-group()"></xsl:copy-of>
-      </p>
-     </xsl:for-each-group>
-    </tei:epigraph>
- </xsl:template>
-
-
- <xsl:template match="tei:div" mode="pass3">
-  <xsl:choose>
-   <xsl:when test="./tei:epigraph">
-    <tei:epigraph>
-     <xsl:for-each-group group-by="tei:epigraph" select="./child::node()">
-      <p>
-       <xsl:copy-of select="current-group()"></xsl:copy-of>
-      </p>
-     </xsl:for-each-group>
-    </tei:epigraph>
-    <xsl:apply-templates mode="pass3"/>
-   </xsl:when>
-   <xsl:otherwise>
-    <xsl:apply-templates mode="pass3"/>
-   </xsl:otherwise>
-  </xsl:choose>
- </xsl:template>
- -->
  <!-- fix other styles which should be TEI elements -->
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc>fix paragraph styles which should be TEI elements:</desc>

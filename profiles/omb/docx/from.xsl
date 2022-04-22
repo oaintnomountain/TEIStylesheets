@@ -534,11 +534,32 @@
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc>fix paragraph styles which should be TEI elements: p rend=epigraph to epigraph element </desc>
  </doc>
+ <!-- 
   <xsl:template match="tei:p[@rend='epigraph' or @rend='Epigraph']" mode="pass2">
   <epigraph>
    <xsl:copy-of select="."/>
   </epigraph>
  </xsl:template>
+  -->
+ <xsl:template match="tei:div" mode="pass2">
+  <xsl:copy>
+   <xsl:for-each-group select="tei:p[@rend='epigraph' or @rend='Epigraph']" group-adjacent="name( )">
+    <xsl:choose>
+     <xsl:when test="self::tei:p[@rend='epigraph' or @rend='Epigraph']">
+      <epigraph>
+       <xsl:apply-templates select="current-group()" mode="pass2"/>
+      </epigraph>
+     </xsl:when>
+    
+     <xsl:otherwise>
+      <xsl:apply-templates select="current-group()" mode="pass2"/>
+     </xsl:otherwise>
+     
+    </xsl:choose>  
+   </xsl:for-each-group>
+    <xsl:apply-templates mode="pass2"/>
+  </xsl:copy>
+ </xsl:template> 
 
 
  <!-- include Legend in table/grafik -->
@@ -614,7 +635,8 @@
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc>join consecutive epigraph elements into one epigraph element with paragraphs</desc>
  </doc>
- 
+
+ <!--
  <xsl:template match="tei:div" mode="pass3">
   <xsl:copy>
    <xsl:for-each-group select="tei:epigraph/node()" group-adjacent="if (. instance of element()) then node-name(.) else false()">
@@ -635,7 +657,7 @@
  </xsl:template>
  
  
- <!--
+
  <xsl:template match="tei:epigraph" mode="pass3">
   <xsl:choose>
    <xsl:when test="./following-sibling::tei:epigraph">

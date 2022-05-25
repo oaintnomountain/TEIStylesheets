@@ -8,7 +8,7 @@
  <xsl:import href="../../../docx/from/docxtotei.xsl"/>
  <!-- This transformation is based on the agora transformation and the modification 
   for "rg Rechtsgeschichte - Legal History" by Olaf Berg (MPI for European Legal History) 2013.
-  it is modified for use at the Leibniz-Center for Contemporary History Potsdam (ZZF) and actualized to work with the corrent TEI stylesheets v 7.52.0
+  it is modified for use at the Leibniz-Center for Contemporary History Potsdam (ZZF) and actualized to work with the current TEI stylesheets v 7.52.0
   c 2022 cc-by-sa Olaf Berg (ZZF-Potsdam)
   
   main purpose of change:
@@ -552,28 +552,239 @@
   </xsl:copy>
  </xsl:template> 
 
+<!-- transform paragraph styled as "Legend" into tei trailer element -->
+ <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+  <xd:desc> transform paragraph with style "Legende" or "tabletrailer / Tabellenlegende" into tei element "trailer". 
+   Trailer will be positioned within tabele/figure element in pass 2 </xd:desc>
+ </xd:doc>
+ <xsl:template match="tei:p[@rend='Legende' or @rend='tabletrailer' or @rend='Tabellenlegende']" mode="pass1hi">
+  <xsl:element name="trailer">
+   <xsl:apply-templates mode="pass1hi"/>
+  </xsl:element>
+ </xsl:template>
+
+ <!-- transform paragraph styled as "tabelhead" into tei caption element -->
+ <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+  <xd:desc> transform paragraph with style "tabelhead" or "Tabellenüberschrift" into tei element "caption". 
+   Caption will be positioned within tabele/figure element as head in pass 2 </xd:desc>
+ </xd:doc>
+ <xsl:template match="tei:p[@rend='Tabellenüberschrift' or @rend='tablehead']" mode="pass1hi">
+  <xsl:element name="CAPTION">
+   <xsl:apply-templates mode="pass1hi"/>
+  </xsl:element>
+ </xsl:template>
+ 
+<!-- create OMB video element in column between paragraphs -->
+ <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
+  <desc>create video reference as TEI element for video sequences taken from the OMB that are set between text-paragraphs. 
+   Use information from ms word paragraph styled as "Videoblock" with OMB clip information in squared brackets. 
+   p rend=Videoblock to tei:media in tei:figure Include Legend into figure element</desc>
+ </doc>
+ 
+ <xsl:template match="tei:p[@rend='Videoblock' or @rend='videoblock']" mode="pass2">
+  <figure place="column">
+   <xsl:element name="head">
+    <xsl:value-of select="replace(text(),'^\[{1,2}[Bb]ox: {0,1}(\d+) +[Rr]olle: {0,1}(\d+).+','Sequenz aus OMB Box $1 Rolle $2')"/>
+   </xsl:element>
+   <xsl:element name="media">
+    <xsl:attribute name="mimeType">video/mp4</xsl:attribute>
+    <xsl:if test="matches(text(),'^\[{1,2}[Bb]ox: {0,1}\d+')">
+     <xsl:attribute name="url">
+      <xsl:value-of select="replace(text(),'^\[{1,2}[Bb]ox: {0,1}(\d+) +[Rr]olle: {0,1}(\d+).+','https://open-memory-box.de/stream/watermark/480/omb_$1-$2_480_wm.mp4')"/>
+     </xsl:attribute>
+     <xsl:attribute name="start">
+      <xsl:value-of select="replace(text(),'^\[{1,2}.+[Ss]tart: ?(\d{2})[h:\.](\d{2})[m:\.](\d{2})[s:\.](\d{2}).+','$1:$2:$3.$4')"/>
+     </xsl:attribute>
+     <xsl:attribute name="end">
+      <xsl:value-of select="replace(text(),'^\[{1,2}.+[Ss]top: ?(\d{2})[h:\.](\d{2})[m:\.](\d{2})[s:\.](\d{2}).+','$1:$2:$3.$4')"/>
+     </xsl:attribute>
+    </xsl:if>
+   </xsl:element>
+   <xsl:if test="following-sibling::*[self::tei:trailer]">
+    <xsl:copy-of select="following-sibling::*[1][self::tei:trailer[1]]"/>    
+   </xsl:if>
+  </figure>
+ </xsl:template>
+ 
+ <!-- create OMB video reference and element inline in p -->
+ <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+  <xd:desc> create OMB video-reference for OMB sequences within text paragraphs (inline)
+   the template matches only the text node of tei:p so that the element structure of p is preserved </xd:desc>
+ </xd:doc>
+ <xsl:template match="tei:p//text()" mode="pass2">
+  <xsl:choose>
+   <xsl:when test=".,'\[[Bb]ox:.+?\]'">
+    <!--  <xsl:analyze-string select="." regex="\[{{1,2}}[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *(([Ss]tart:? ?(\d[0-9\.: ]+\d)?)? *([Ss]top:? ?(\d[\d\.:hmsf ]+[\dsf]))?)? *(#.+?)?\]{{1,2}}"> -->
+    <xsl:analyze-string select="." regex="\[{{1,2}}[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.: ]+\d)?[, ]*([Ss]top:? ?\d[\d\.: ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
+
+     <xsl:matching-substring>
+      <!-- extract variable values from analyzed string. We have to do it her because in xslt variables are only aviable to childs and siblings -->
+      <xsl:variable name="box">
+       <xsl:choose>
+        <xsl:when test="matches(regex-group(1),'\d{3}')">
+         <xsl:value-of select="regex-group(1)"/>
+        </xsl:when>
+        <xsl:when test="matches(regex-group(1),'\d\d')">
+         <xsl:value-of select="concat('0', regex-group(1))"/>
+        </xsl:when>
+        <xsl:when test="matches(regex-group(1),'\d')">
+         <xsl:value-of select="concat('00', regex-group(1))"/>
+        </xsl:when>
+       </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="roll">
+       <xsl:choose>
+        <xsl:when test="matches(regex-group(2),'\d\d')">
+         <xsl:value-of select="regex-group(2)"/>
+        </xsl:when>
+        <xsl:when test="matches(regex-group(2),'\d')">
+         <xsl:value-of select="concat('0', regex-group(2))"/>
+        </xsl:when>
+       </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="start">
+       <xsl:if test="regex-group(3)">
+        <xsl:choose>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+         </xsl:when>
+        </xsl:choose>
+       </xsl:if>
+      </xsl:variable>
+      <xsl:variable name="end">
+       <xsl:if test="regex-group(4)">
+        <xsl:choose>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+         </xsl:when>
+        </xsl:choose>
+       </xsl:if>
+      </xsl:variable>
+      <xsl:variable name="trailer">
+       <xsl:if test="matches(regex-group(3),'^#.+')">
+        <xsl:value-of select="replace(regex-group(3),'#(.+)','$1')"/>
+       </xsl:if>
+       <xsl:if test="matches(regex-group(4),'^#.+')">
+        <xsl:value-of select="replace(regex-group(5),'#(.+)','$1')"/>
+       </xsl:if>
+       <xsl:if test="matches(regex-group(5),'^#.+')">
+        <xsl:value-of select="replace(regex-group(5),'#(.+)','$1')"/>
+       </xsl:if>
+      </xsl:variable>
+      
+      <xsl:element name="ref">
+       <xsl:attribute name="target">
+        <xsl:choose>
+         <xsl:when test="$start != ''">
+          <xsl:value-of select="concat('http://open-memory-box.de/roll/',$box,'-',$roll,'/',replace($start,'(\d+):(\d+):(\d+)\.(\d+)','$1-$2-$3-$4'))"/>
+         </xsl:when>
+         <xsl:otherwise>
+          <xsl:value-of select="concat('http://open-memory-box.de/roll/',$box,'-',$roll,'/')"/>
+         </xsl:otherwise>
+        </xsl:choose>
+       </xsl:attribute>
+       <xsl:value-of select="concat('(OMB Box ',$box,' Rolle ',$roll,')')"/>
+      </xsl:element>      
+      <figure place="margin">
+       <xsl:element name="head">
+        <xsl:value-of select="concat('Sequenz aus OMB Box ',$box,' Rolle ', $roll)"/>
+       </xsl:element>
+       <xsl:element name="media">
+        <xsl:attribute name="mimeType">video/mp4</xsl:attribute>
+        <xsl:attribute name="url">
+         <xsl:value-of select="concat('video/omb_', $box,'-', $roll,'_480_wm.mp4')"/>
+        </xsl:attribute>
+        <xsl:if test="$start != ''">
+         <xsl:attribute name="start">
+          <xsl:value-of select="$start"/>
+         </xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$end != ''">
+         <xsl:attribute name="end">
+          <xsl:value-of select="$end"/>
+         </xsl:attribute>
+        </xsl:if>        
+       </xsl:element>
+       <xsl:if test="$trailer != ''">
+        <xsl:element name="trailer">
+         <xsl:value-of select="$trailer"/>
+        </xsl:element>
+       </xsl:if>
+      </figure>
+     </xsl:matching-substring>
+     <xsl:non-matching-substring>
+      <xsl:copy-of select="."/>
+     </xsl:non-matching-substring>
+    </xsl:analyze-string>  
+   </xsl:when>
+   
+   <xsl:otherwise>
+    <xsl:apply-templates mode="pass2"/>
+   </xsl:otherwise>
+  </xsl:choose>
+  
+ </xsl:template>
+ 
+ 
 
  <!-- include Legend in table/grafik -->
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc> &lt;CAPTION&gt; belongs to nearest figure or table, Legend as well. Put Caption above, and
-   Legend under figure</desc>
- </doc>
- <xsl:template match="tei:CAPTION" mode="pass2"/>
+   Legend under figure or table</desc>
+ </doc> 
  
  <xsl:template match="tei:table|tei:figure" mode="pass2">
   <xsl:copy>
    <xsl:apply-templates select="@*" mode="pass2"/>
+   <xsl:if test="preceding-sibling::*[1][self::tei:p[@rend='Tabellenüberschrift' or @rend='tablehead']]">
+    <xsl:element name="head">
+     <xsl:apply-templates select="preceding-sibling::*[1][self::tei:p[@rend='Tabellenüberschrift' or @rend='tablehead']][1]" mode='pass2'/>
+     <!--   <xsl:copy-of select="preceding-sibling::*[1][self::tei:p[@rend='Tabellenüberschrift' or @rend='tablehead'][1]/node()]"/> --> 
+    </xsl:element>
+   </xsl:if>
+   <xsl:if test="preceding-sibling::*[1][self::tei:CAPTION]">
+    <xsl:element name="head">
+     <xsl:apply-templates select="preceding-sibling::*[1][self::tei:CAPTION]/*" mode="pass2"/>
+    </xsl:element>   
+   </xsl:if>
    <xsl:if test="following-sibling::*[1][self::tei:CAPTION]">
     <xsl:apply-templates select="following-sibling::*[1][self::tei:CAPTION]/*" mode="pass2"/>
    </xsl:if>
    <xsl:apply-templates mode="pass2"/>
-   <xsl:if test="self::tei:figure and following-sibling::*[self::tei:p[@rend='Legende']]">
-    <xsl:apply-templates select="following-sibling::*[2][self::tei:p[@rend='Legende'][1]]"
-     mode="pass2"/>
+   <xsl:if test="following-sibling::*[1][self::tei:CAPTION] and following-sibling::*[self::tei:trailer]">
+    <xsl:copy-of select="following-sibling::*[2][self::tei:trailer[1]]"/>
+   </xsl:if>
+   <xsl:if test="following-sibling::*[1][self::tei:trailer]">
+    <xsl:copy-of select="following-sibling::*[1][self::tei:trailer[1]]"/>
    </xsl:if>
   </xsl:copy>
  </xsl:template>
 
+ <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+  <xd:desc>
+   Suppress tei:CAPTION from textrun because it is fiddled into the tabel/figure element as head
+  </xd:desc>
+ </xd:doc>
+ <xsl:template match="tei:CAPTION" mode="pass2"/>
+ <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
+  <xd:desc>
+   Suppress tei:trailer from normal textblock because it is fiddled into table/figure element as head
+  </xd:desc>
+ </xd:doc>
+ <xsl:template match="tei:div/tei:trailer" mode="pass2"/>
+ 
 
  <!-- only needed to change id and kill n attribute and handle endnotes like footnotes
   <xsl:template match="tei:note" mode="pass2">
@@ -590,43 +801,6 @@
 
  <!-- and here's what we do in pass 3 -->
 
- <!-- copy everything that is not specifed further on -->
-
-
-
- <!-- fix up the default header
- <xsl:template match="tei:encodingDesc" mode="pass3"/>
- <xsl:template match="tei:titleStmt/tei:author" mode="pass3">
-  <xsl:choose>
-   <xsl:when test="tei:surname and tei:name">
-    <xsl:apply-templates/>
-   </xsl:when>
-   <xsl:otherwise>
-    <author>
-     <name>
-      <xsl:value-of select="substring-before(.,' ')"/>
-     </name>
-     <surname>
-      <xsl:value-of select="substring-after(.,' ')"/>
-     </surname>
-    </author>
-   </xsl:otherwise>
-  </xsl:choose>
- </xsl:template>
-  -->
-
- <!-- filter out special paragraph styles to maintain @rend attribute ERROR: italic text will be doubled 
- <xsl:template match="tei:p[@rend='Legende']" mode="pass3">
-  <p rend="figure-legend">
-   <xsl:copy-of select="descendant::node()"/>
-  </p>
- </xsl:template> -->
-
-<!-- join consecutive epigraph elements into one epigraph element with paragraphs 
- <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-  <desc>join consecutive epigraph elements into one epigraph element with paragraphs</desc>
- </doc>
--->
  
  <!-- fix other styles which should be TEI elements -->
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
@@ -675,7 +849,7 @@
   </title>
  </xsl:template>
 
-<!-- create rend Attribut for head -->
+<!-- create rend Attribut for head including numbering as appropriate -->
  <xsl:template match="tei:head[not(@rend)]" mode="pass3">
   <xsl:choose>
    <xsl:when test="ancestor::tei:figure or ancestor::tei:table">

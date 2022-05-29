@@ -582,11 +582,12 @@
  </doc>
  
  <xsl:template match="tei:p[@rend='Videoblock' or @rend='videoblock']" mode="pass2">
-  <figure place="column">
+  <figure place="column" type="omb">
    <xsl:element name="head">
     <xsl:value-of select="replace(text(),'^\[{1,2}[Bb]ox: {0,1}(\d+) +[Rr]olle: {0,1}(\d+).+','Sequenz aus OMB Box $1 Rolle $2')"/>
    </xsl:element>
    <xsl:element name="media">
+    <xsl:attribute name="type">omb</xsl:attribute>
     <xsl:attribute name="mimeType">video/mp4</xsl:attribute>
     <xsl:if test="matches(text(),'^\[{1,2}[Bb]ox: {0,1}\d+')">
      <xsl:attribute name="url">
@@ -697,14 +698,14 @@
        </xsl:attribute>
        <xsl:value-of select="concat('(OMB Box ',$box,' Rolle ',$roll,')')"/>
       </xsl:element>      
-      <figure place="margin">
+      <figure place="margin" type="omb">
        <xsl:element name="head">
         <xsl:value-of select="concat('Sequenz aus OMB Box ',$box,' Rolle ', $roll)"/>
        </xsl:element>
        <xsl:element name="media">
         <xsl:attribute name="mimeType">video/mp4</xsl:attribute>
         <xsl:attribute name="url">
-         <xsl:value-of select="concat('video/omb_', $box,'-', $roll,'_480_wm.mp4')"/>
+         <xsl:value-of select="concat('https://open-memory-box.de/stream/watermark/480/omb_', $box,'-', $roll,'_480_wm.mp4')"/>
         </xsl:attribute>
         <xsl:if test="$start != ''">
          <xsl:attribute name="start">

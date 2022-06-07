@@ -57,7 +57,7 @@
             
             <body data-offset="4em">
                 <!-- Navigation -->
-                <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+                <nav class="navbar navbar-expand-sm bg-dark navbar-dark ">
                     <a class="navbar-brand" href="#">av Zeitgeschichte</a>
                     <a class="navbar-link text-info" href="#">DDR im Schmalfilm</a>
                     
@@ -317,7 +317,8 @@
             <xsl:attribute name="controls"/>
             <xsl:attribute name="loop"/>
             <xsl:attribute name="preload">auto</xsl:attribute>
-            <xsl:attribute name="width">480</xsl:attribute>
+            <xsl:attribute name="height">480</xsl:attribute>
+            <xsl:attribute name="width">640</xsl:attribute>
             <xsl:element name="source">
                 <xsl:attribute name="src">
                     <xsl:value-of select="@url"/>
@@ -343,15 +344,15 @@
     
     <!-- how to handle section titles and trailer elements in the main content -->
     <xsl:template match="tei:div/tei:head">
-        <h1>
-            <xsl:apply-templates/>
-        </h1>
-    </xsl:template>
-    
-    <xsl:template match="tei:div/tei:div/tei:head">
         <h2>
             <xsl:apply-templates/>
         </h2>
+    </xsl:template>
+    
+    <xsl:template match="tei:div/tei:div/tei:head">
+        <h3>
+            <xsl:apply-templates/>
+        </h3>
     </xsl:template>
     
     <xsl:template match="tei:figure[@type='omb']/tei:head">

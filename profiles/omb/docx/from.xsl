@@ -404,11 +404,6 @@
   <text>
    <front>
     <titlePage>
-     <xsl:for-each select="//tei:p[@rend='author' or @rend='Autor']">
-      <docAuthor>
-       <xsl:apply-templates mode="pass2"/>
-      </docAuthor>
-     </xsl:for-each>
      <docTitle>
       <xsl:for-each select="//tei:p[@rend='Supertitle' or @rend='Übertitel' or @rend='Obertitel']">
        <titlePart type="sup">
@@ -428,6 +423,12 @@
        </titlePart>
       </xsl:for-each>
      </docTitle>
+
+     <xsl:for-each select="//tei:p[@rend='author' or @rend='Autor']">
+      <docAuthor>
+       <xsl:apply-templates mode="pass2"/>
+      </docAuthor>
+     </xsl:for-each>
     </titlePage>
     <div type="abstract">
      <xsl:for-each select="//tei:p[@rend='abstract']">

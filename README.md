@@ -3,6 +3,9 @@
 [![GitHub release](https://img.shields.io/github/release/TEIC/Stylesheets.svg)](https://github.com/TEIC/Stylesheets/releases)
 [![Stylesheets Tests](https://github.com/TEIC/Stylesheets/actions/workflows/test.yml/badge.svg)](https://github.com/TEIC/Stylesheets/actions/workflows/test.yml)
 
+This Fork adds a customized profile for a Website with research essays on the Open Memory Box. Created within the BMBF sponsored Reserach Project: "Das mediale Erbe der DDR" (https://medienerbe-ddr.de)
+
+
 TEI XSL Stylesheets
 
 This is a family of XSLT 2.0 stylesheets to transform TEI XML documents to various formats, including XHTML, LaTeX, XSL Formatting Objects, ePub, plain text, RDF, JSON; and to/from Word OOXML (docx) and OpenOfice (odt).  They concentrate on the core TEI modules which are used for simple transcription and "born digital" writing. It is important to understand that they do _not_:

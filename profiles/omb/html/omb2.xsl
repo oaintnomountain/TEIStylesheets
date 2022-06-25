@@ -12,13 +12,13 @@
     <xsl:variable name="today" select="format-date(current-date(), '[M01]-[D01]-[Y0001]')"/>
     <xsl:variable name="title">
         <xsl:text>DDR im Schmalfilm | </xsl:text>
-        <xsl:apply-templates select="tei:TeiHeader//tei:title[@type = 'main']"/>
+        <xsl:value-of select="replace(//tei:teiHeader//tei:title[@type = 'main'], '[\s\W]+',' ')"/>
     </xsl:variable>
     <xsl:variable name="domain">https://ddr-im-schmalfilm.de</xsl:variable>
     <xsl:variable name="articlelink">
         <xsl:value-of select="$domain"/>
         <xsl:text>/</xsl:text>
-        <xsl:value-of select="tei:TeiHeader//tei:title[@type = 'short']"/>
+        <xsl:value-of select="//tei:teiHeader//tei:title[@type = 'short']"/>
     </xsl:variable>
 
 <!-- general fallback templates -->
@@ -504,6 +504,18 @@
             <xsl:apply-templates mode="inImage"/>
         </p>
     </xsl:template>
+    
+    <xsl:template match="tei:titlePart[@type='main']" mode="inImage">
+        <span class="maintitle">
+            <xsl:apply-templates />
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:titlePart[@type='sub']" mode="inImage">
+        <span class="subtitle">
+            <xsl:apply-templates />
+        </span>
+    </xsl:template>
+    
 
     <!-- how to format section titles in table of content -->
     <xsl:template match="tei:div/tei:head" mode="inhaltsvz">

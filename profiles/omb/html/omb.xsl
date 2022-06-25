@@ -313,12 +313,20 @@
     <xsl:template match="tei:figure[@type='omb' and @place='margin']"/>
     
     <xsl:template match="tei:media[@type='omb']">
+        <xsl:variable name="poster">
+            <xsl:value-of select="replace(@url,'(.+)stream/watermark(.+)wm\.mp4','$1thumb$2')"/>
+            <xsl:value-of select="replace(@start,'[:\.]', '-')"/>
+            <xsl:text>.jpg</xsl:text>
+        </xsl:variable>
         <xsl:element name="video">
             <xsl:attribute name="controls"/>
             <xsl:attribute name="loop"/>
-            <xsl:attribute name="preload">auto</xsl:attribute>
+            <xsl:attribute name="preload">none</xsl:attribute>
             <xsl:attribute name="height">480</xsl:attribute>
             <xsl:attribute name="width">640</xsl:attribute>
+            <xsl:attribute name="poster">
+                <xsl:value-of select="$poster"/>
+            </xsl:attribute>
             <xsl:element name="source">
                 <xsl:attribute name="src">
                     <xsl:value-of select="@url"/>

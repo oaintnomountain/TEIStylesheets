@@ -316,6 +316,9 @@
   <teiHeader>
    <fileDesc>
     <titleStmt>
+     <title type="short">
+      <xsl:value-of select="lower-case(substring(replace(//tei:p[@rend='Title'], '[\s\W]', '-'),1,25))"/>
+     </title>
      <xsl:for-each select="//tei:p[@rend='Supertitle' or @rend='Übertitel' or @rend='Obertitel']">
       <title type="sup">
        <xsl:apply-templates mode="pass2"/>
@@ -349,38 +352,41 @@
      </p>
     </publicationStmt>
     <seriesStmt>
-     <title>ZZF Schmalfilmportal Essays</title>
-     <biblScope type="issue">version 01</biblScope>
-     <biblScope type="vol">2022</biblScope>
- 
-      <xsl:choose>
+     <title>DDR im Schmalfilm</title>
+     <respStmt>
+      <resp>ed. by</resp>
+      <name>Olaf Berg (ZZF Potsdam)</name>
+     </respStmt> 
+     <biblScope unit="issue">version 01</biblScope>
+     <biblScope unit="volume">2022</biblScope>
+     <xsl:choose>
        <xsl:when test="string-length($ombRubrikDE)+string-length($ombRubrikEN)!=0">
-        <biblScope type="part" xml:lang="de-DE"><xsl:value-of select="$ombRubrikDE"/></biblScope>
-        <biblScope type="part" xml:lang="en-GB"><xsl:value-of select="$ombRubrikEN"/></biblScope>
+        <biblScope unit="part" xml:lang="de-DE"><xsl:value-of select="$ombRubrikDE"/></biblScope>
+        <biblScope unit="part" xml:lang="en-GB"><xsl:value-of select="$ombRubrikEN"/></biblScope>
        </xsl:when>
        <xsl:when test="contains(lower-case(//tei:body//tei:p[1][@rend='Parameter']),'kuratorisch')">
-        <biblScope type="part" xml:lang="de-DE">Kuratorische Anmerkungen</biblScope>
-        <biblScope type="part" xml:lang="en-GB">curatorial remarks</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Kuratorische Anmerkungen</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">curatorial remarks</biblScope>
        </xsl:when>
        <xsl:when test="contains(lower-case(//tei:body//tei:p[1][@rend='Parameter']),'meta')">
-        <biblScope type="part" xml:lang="de-DE">Meta-Analysen</biblScope>
-        <biblScope type="part" xml:lang="en-GB">meta analysis</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Meta-Analysen</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">meta analysis</biblScope>
        </xsl:when>
        <xsl:when test="contains(lower-case(//tei:body//tei:p[1][@rend='Parameter']),'öffentlich')">
-        <biblScope type="part" xml:lang="de-DE">Öffentliches Leben</biblScope>
-        <biblScope type="part" xml:lang="en-GB">public life</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Öffentliches Leben</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">public life</biblScope>
        </xsl:when>
        <xsl:when test="contains(lower-case(//tei:body//tei:p[1][@rend='Parameter']),'privat')">
-        <biblScope type="part" xml:lang="de-DE">Privates Leben</biblScope>
-        <biblScope type="part" xml:lang="en-GB">privat life</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Privates Leben</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">privat life</biblScope>
        </xsl:when>
        <xsl:when test="contains(lower-case(//tei:body//tei:p[1][@rend='Parameter']),'objekte')">
-        <biblScope type="part" xml:lang="de-DE">Tiere und Gegenstände</biblScope>
-        <biblScope type="part" xml:lang="en-GB">animals and things</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Tiere und Gegenstände</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">animals and things</biblScope>
        </xsl:when>
        <xsl:otherwise>
-        <biblScope type="part" xml:lang="de-DE">Rubrik</biblScope>
-        <biblScope type="part" xml:lang="en-GB">section</biblScope>
+        <biblScope unit="part" xml:lang="de-DE">Rubrik</biblScope>
+        <biblScope unit="part" xml:lang="en-GB">section</biblScope>
        </xsl:otherwise>
       </xsl:choose>
      
@@ -494,17 +500,18 @@
       </xsl:for-each>
      </listBibl>
     </div>
+    <div type="author-info">
+     <xsl:for-each select="//tei:p[@rend='cv' or @rend='author-info']">
+      <p>
+       <xsl:apply-templates mode="pass2"/>
+      </p>
+     </xsl:for-each>
+    </div>
    </back>
   </text>
  </xsl:template>
  
- <!-- get numbering style for head elements from special paragraph format in word document and set variable acordingly
- <xsl:template match="p[@rend='nummerierungsstil']" mode="pass2">
- 
-  <xsl:value-of select="."/>
- </xsl:template>
-  -->
- 
+  
  <!-- suppress paragraphs which have been jiggled into front/back -->
  <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
   <desc>suppress paragraphs which have been jiggled into front/back from body of text </desc>
@@ -513,6 +520,7 @@
  <xsl:template match="tei:p[@rend='author' or @rend='Autor']" mode="pass2"/>
  <xsl:template match="tei:p[@rend='Subtitle']" mode="pass2"/>
  <xsl:template match="tei:p[@rend='Suptitle' or @rend='Übertitel' or @rend='Obertitel']" mode="pass2"/>
+ <xsl:template match="tei:p[@rend='cv' or @rend='author-info']" mode="pass2" />
  <xsl:template
   match="tei:p[@rend='abstract' or @rend='abstract-de' or @rend='abstract-en' 
   or @rend='abstract-es' or @rend='abstract-pt' or @rend='abstract-it' or @rend='abstract-fr']"
@@ -614,13 +622,13 @@
      <xsl:if test="regex-group(3)">
       <xsl:choose>
        <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
        </xsl:when>
        <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
        </xsl:when>
        <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
        </xsl:when>
       </xsl:choose>
      </xsl:if>
@@ -629,13 +637,13 @@
      <xsl:if test="regex-group(4)">
       <xsl:choose>
        <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
        </xsl:when>
        <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
        </xsl:when>
        <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
        </xsl:when>
       </xsl:choose>
      </xsl:if>
@@ -664,11 +672,13 @@
       </xsl:attribute>
       <xsl:if test="$start != ''">
        <xsl:attribute name="start">
+        <xsl:text>tc:</xsl:text>
         <xsl:value-of select="$start"/>
        </xsl:attribute>
       </xsl:if>
       <xsl:if test="$end != ''">
        <xsl:attribute name="end">
+        <xsl:text>tc:</xsl:text>
         <xsl:value-of select="$end"/>
        </xsl:attribute>
       </xsl:if>        
@@ -684,33 +694,6 @@
   </xsl:analyze-string>    
  </xsl:template>
  
- <!-- alte variante, weniger fehlertolerant 
- <xsl:template match="tei:p[@rend='Videoblock' or @rend='videoblock']" mode="pass2">
-  <figure place="column" type="omb">
-   <xsl:element name="head">
-    <xsl:value-of select="replace(text(),'^\[{1,2}[Bb]ox: {0,1}(\d+),? +[Rr]olle: {0,1}(\d+).+','Sequenz aus OMB Box $1 Rolle $2')"/>
-   </xsl:element>
-   <xsl:element name="media">
-    <xsl:attribute name="type">omb</xsl:attribute>
-    <xsl:attribute name="mimeType">video/mp4</xsl:attribute>
-    <xsl:if test="matches(text(),'^\[{1,2}[Bb]ox: {0,1}\d+')">
-     <xsl:attribute name="url">
-      <xsl:value-of select="replace(text(),'^\[{1,2}[Bb]ox: {0,1}(\d+),? +[Rr]olle: {0,1}(\d+).+','https://open-memory-box.de/stream/watermark/480/omb_$1-$2_480_wm.mp4')"/>
-     </xsl:attribute>
-     <xsl:attribute name="start">
-      <xsl:value-of select="replace(text(),'^\[{1,2}.+[Ss]tart: ?(\d{2})[h:\.](\d{2})[m:\.](\d{2})[s:\.](\d{2}).+','$1:$2:$3.$4')"/>
-     </xsl:attribute>
-     <xsl:attribute name="end">
-      <xsl:value-of select="replace(text(),'^\[{1,2}.+[Ss]top: ?(\d{2})[h:\.](\d{2})[m:\.](\d{2})[s:\.](\d{2}).+','$1:$2:$3.$4')"/>
-     </xsl:attribute>
-    </xsl:if>
-   </xsl:element>
-   <xsl:if test="following-sibling::*[self::tei:trailer]">
-    <xsl:copy-of select="following-sibling::*[1][self::tei:trailer[1]]"/>    
-   </xsl:if>
-  </figure>
- </xsl:template>
- -->
  
  <!-- create OMB video reference and element inline in p -->
  <xd:doc xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl">
@@ -754,13 +737,13 @@
        <xsl:if test="regex-group(3)">
         <xsl:choose>
          <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
          </xsl:when>
          <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
          <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>
@@ -769,13 +752,13 @@
        <xsl:if test="regex-group(4)">
         <xsl:choose>
          <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1:$2:$3.$4')"/>
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
          </xsl:when>
          <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00:$1:$2.$3')"/>
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
          <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00:$1:$2.00')"/>
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>
@@ -796,7 +779,7 @@
        <xsl:attribute name="target">
         <xsl:choose>
          <xsl:when test="$start != ''">
-          <xsl:value-of select="concat('http://open-memory-box.de/roll/',$box,'-',$roll,'/',replace($start,'(\d+):(\d+):(\d+)\.(\d+)','$1-$2-$3-$4'))"/>
+          <xsl:value-of select="concat('http://open-memory-box.de/roll/',$box,'-',$roll,'/',replace($start,'(\d+)h(\d+)m(\d+)s(\d+)','$1-$2-$3-$4'))"/>
          </xsl:when>
          <xsl:otherwise>
           <xsl:value-of select="concat('http://open-memory-box.de/roll/',$box,'-',$roll,'/00-00-00-00')"/>
@@ -816,11 +799,13 @@
         </xsl:attribute>
         <xsl:if test="$start != ''">
          <xsl:attribute name="start">
+          <xsl:text>tc:</xsl:text>
           <xsl:value-of select="$start"/>
          </xsl:attribute>
         </xsl:if>
         <xsl:if test="$end != ''">
          <xsl:attribute name="end">
+          <xsl:text>tc:</xsl:text>
           <xsl:value-of select="$end"/>
          </xsl:attribute>
         </xsl:if>        
@@ -965,6 +950,11 @@
      <xsl:attribute name="rend">
       <xsl:text>none</xsl:text>
      </xsl:attribute>
+     <xsl:attribute name="xml:id">
+      <xsl:text>fig</xsl:text>
+      <xsl:number from="tei:body" count="tei:head[ancestor::tei:figure or ancestor::tei:table]" level="any"/>
+     </xsl:attribute>
+     
      <xsl:apply-templates mode="pass3"/>
     </xsl:element>
    </xsl:when>
@@ -986,6 +976,10 @@
         <xsl:value-of select="$headNumberStyle"/>
        </xsl:otherwise>
       </xsl:choose>
+     </xsl:attribute>
+     <xsl:attribute name="xml:id">
+      <xsl:text>hd</xsl:text>
+      <xsl:number from="tei:body" count="tei:head[ancestor::tei:div]" level="any"/>
      </xsl:attribute>
      <xsl:apply-templates mode="pass3"/>
     </xsl:element>

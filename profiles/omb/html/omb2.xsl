@@ -20,6 +20,13 @@
         <xsl:text>/</xsl:text>
         <xsl:value-of select="//tei:teiHeader//tei:title[@type = 'short']"/>
     </xsl:variable>
+    <xsl:variable name="abstract">
+        <xsl:value-of select="replace(//tei:front/tei:div[@type = 'abstract'], '[\s\W]+',' ')"/>
+    </xsl:variable>
+    <xsl:variable name="description">
+        <xsl:text>Wissenschaftlicher Essay zu Szenen aus privaten DDR-Schmalfilmen, die in der Open-Memory-Box gesammelt wurden. Thema dieses Essays: </xsl:text>
+        <xsl:value-of select="replace(//tei:teiHeader//tei:title[@type = 'main'], '[\s\W]+',' ')"/>
+    </xsl:variable>
 
 <!-- general fallback templates -->
     <xsl:template match="@* | * | text() | comment() | processing-instruction()">
@@ -56,7 +63,7 @@
                 </meta>
                 <meta property="og:description">
                     <xsl:attribute name="content">
-                        <xsl:value-of select="$title"/>
+                        <xsl:value-of select="$description"/>
                     </xsl:attribute>
                 </meta>
                 <!-- Im TEI definierter short-titel als ID. Besser über SSG generieren? -->
@@ -74,7 +81,11 @@
                         <xsl:value-of select="$title"/>
                     </xsl:attribute>
                 </meta>
-                <meta name="twitter:description" content=""/>
+                <meta name="twitter:description">
+                    <xsl:attribute name="content">
+                        <xsl:value-of select="$description"/>
+                    </xsl:attribute>
+                </meta>
                 <meta name="twitter:image" content="files/icons/share.jpg"/>
                 <meta name="twitter:domain">
                     <xsl:attribute name="content">
@@ -251,6 +262,7 @@
                                                 onclick="scroller('#autor_in');"><xsl:apply-templates select="//tei:docAuthor"/></a></h5>
                                             <p class="date no_style"><xsl:value-of select="$today"/></p>
                                         </div>
+                                        
                                         <!-- Wenn es keine Zwischenüberschriften gibt, wird kein Inhaltsverzeichnis angelegt -->
                                         <xsl:if test="descendant::tei:body/tei:div/tei:head">
                                             <div class="inhalt check fade_in">
@@ -291,7 +303,16 @@
                                                 </div>
                                             </div>
                                         </xsl:if>
-
+                                        
+                                        <!-- wenn es kein Abstract gibt, wird auch kein Button dafür angezeigt -->
+                                        <xsl:if test="descendant::tei:front/tei:div[@type='abstract']">
+                                            <div class="abstract">
+                                                <button type="button" data-toggle="collapse" data-target="#abstract" class="transit">Abstract</button>
+                                                <div id="abstract">
+                                                    <xsl:apply-templates select="//tei:front/tei:div[@type='abstract']/tei:p"/> 
+                                                </div>
+                                            </div>
+                                        </xsl:if>
                                     </div>
                                     <!-- Ende Autor, Datum und Inhalt -->
 
@@ -300,13 +321,12 @@
                                     <div class="content">
                                         <!-- Anfang content -->
 
-                                        
+                                        <div class="text">
                                             <!-- Text mit h2, h3, p und video -->
-                                            
                                             <xsl:apply-templates select="//tei:body/tei:div" />
-
-                                        
+                                        </div>
                                         <!-- Ende Text -->
+ 
                                         <aside>
                                             <!-- Fußnoten, Anmerkungen, Bibliographie, Autor*in -->
 
@@ -434,15 +454,15 @@
     
     <!-- how to format tei elements in (body) text -->
     <xsl:template match="tei:body/tei:div">
-        <div class="text">
+        
             <xsl:apply-templates/>
-        </div>
+        
     </xsl:template>
     
     <xsl:template match="tei:body//tei:div/tei:div">
-        <div>
+        
             <xsl:apply-templates/>
-        </div>
+        
     </xsl:template>
     
     <xsl:template match="tei:p">
@@ -555,6 +575,14 @@
             <xsl:apply-templates/>
         </div>
     </xsl:template>
+    
+    <!-- how to format abstract -->
+    <xsl:template match="//tei:div[@type='abstract']/tei:p">
+        <p class="no_style">
+            <xsl:apply-templates/>
+        </p>
+    </xsl:template>
+
 
 
     <!-- how to handle footnotes in the text -->
@@ -643,6 +671,16 @@
     <!-- for the moment do not show omb-scence if inside text paragraphs (only link, see tei:ref) -->
     <xsl:template match="tei:figure[@type = 'omb' and @place = 'margin']"/>
 
+    <!-- process head and trailier in tei:figure so that inline formats like bold and italic be preserved -->
+    <xsl:template match="tei:figure[@type = 'omb']/tei:head">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="tei:figure[@type = 'omb']/tei:trailer">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+
     <xsl:template match="tei:media[@type = 'omb']">
         <xsl:variable name="poster">
             <xsl:value-of select="replace(@url, '.+omb_(.+)_480_wm\.mp4', 'files/images/videothumbs/omb$1_')"/>
@@ -700,12 +738,5 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="tei:figure[@type = 'omb']/tei:head">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-    <xsl:template match="tei:figure[@type = 'omb']/tei:trailer">
-        <xsl:apply-templates/>
-    </xsl:template>
 
 </xsl:stylesheet>

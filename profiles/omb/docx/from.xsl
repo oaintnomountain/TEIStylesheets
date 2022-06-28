@@ -702,7 +702,7 @@
  </xd:doc>
  <xsl:template match="tei:p//text()" mode="pass2">
   <xsl:choose>
-   <xsl:when test=".,'\[ ?[Bb]ox:.+?\]'">
+   <xsl:when test=".,'\[ ?[Bb]ox:?.+?\]'">
     <xsl:analyze-string select="." regex="\[{{1,2}} ?[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.: ]+\d)?[, ]*([Ss]top:? ?\d[\d\.: ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
 
      <xsl:matching-substring>
@@ -742,8 +742,14 @@
          <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
           <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2})')">
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2}).*','00h0$1m$2s$3')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})')">
           <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h0$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>
@@ -757,8 +763,14 @@
          <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
           <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2})')">
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2}).*','00h0$1m$2s$3')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})')">
           <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+         </xsl:when>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h0$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>
@@ -786,7 +798,11 @@
          </xsl:otherwise>
         </xsl:choose>
        </xsl:attribute>
-       <xsl:value-of select="concat('(OMB Box ',$box,' Rolle ',$roll,')')"/>
+       <xsl:value-of select="concat('(OMB Box ',$box,' Rolle ',$roll)"/>
+       <xsl:if test="$trailer != ''">
+        <xsl:value-of select="concat('; ',$trailer)"/>
+       </xsl:if>
+       <xsl:text>)</xsl:text>
       </xsl:element>      
       <figure place="margin" type="omb">
        <xsl:element name="head">
@@ -1065,7 +1081,7 @@
 
  <xsl:template match="tei:hi[@rend='reference']" mode="pass3">
   <xsl:variable name="magicString">
-   <xsl:value-of select="substring-before(substring-after(., '&lt;'),'&gt;')"/>
+   <xsl:value-of select="substring-before(substring-after(., '&lt;'),'&gt;')"/> 
   </xsl:variable>
 
   <xsl:variable name="parentN">
@@ -1133,6 +1149,4 @@
  </xsl:template>
 
 
-
- <!-- <xsl:template match="/">        <xsl:variable name="pass0">         <xsl:apply-templates mode="pass0"/>       </xsl:variable>        <xsl:variable name="pass1">         <xsl:for-each select="$pass0"> 	 <xsl:apply-templates mode="pass3"/>         </xsl:for-each>       </xsl:variable>		        <xsl:apply-templates select="$pass1" mode="pass2"/>              <xsl:call-template name="fromDocxFinalHook"/>     </xsl:template>  -->
 </xsl:stylesheet>

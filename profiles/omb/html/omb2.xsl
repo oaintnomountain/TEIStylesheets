@@ -9,7 +9,7 @@
         normalization-form="NFC" omit-xml-declaration="yes"/>
     
 <!-- declaration of global variables -->
-    <xsl:variable name="today" select="format-date(current-date(), '[M01]-[D01]-[Y0001]')"/>
+    <xsl:variable name="today" select="format-date(current-date(), '[D01]. [MNn] [Y0001]')"/>
     <xsl:variable name="title">
         <xsl:text>DDR im Schmalfilm | </xsl:text>
         <xsl:value-of select="replace(//tei:teiHeader//tei:title[@type = 'main'], '[\s\W]+',' ')"/>
@@ -24,8 +24,8 @@
         <xsl:value-of select="replace(//tei:front/tei:div[@type = 'abstract'], '[\s\W]+',' ')"/>
     </xsl:variable>
     <xsl:variable name="description">
-        <xsl:text>Wissenschaftlicher Essay zu Szenen aus privaten DDR-Schmalfilmen, die in der Open-Memory-Box gesammelt wurden. Thema dieses Essays: </xsl:text>
-        <xsl:value-of select="replace(//tei:teiHeader//tei:title[@type = 'main'], '[\s\W]+',' ')"/>
+        <xsl:text>Wissenschaftlicher Essay zu Szenen aus privaten DDR-Schmalfilmen. </xsl:text>
+        <xsl:value-of select="replace(//tei:front//tei:div[@type = 'abstract'], '[\s\W]+',' ')"/>
     </xsl:variable>
 
 <!-- general fallback templates -->
@@ -56,6 +56,11 @@
                 <meta name="viewport"
                     content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
                 <meta name="format-detection" content="telephone=no"/>
+                <meta name="description">
+                    <xsl:attribute name="content">
+                        <xsl:value-of select="$description"/>
+                    </xsl:attribute>
+                </meta>
                 <meta property="og:title">
                     <xsl:attribute name="content">
                         <xsl:value-of select="$title"/>
@@ -93,15 +98,15 @@
                     </xsl:attribute>
                 </meta>
                 <link rel="manifest" href="site.webmanifest"/>
-                <link rel="apple-touch-icon" sizes="180x180" href="/files/icons/apple-touch-icon.png"/>
+                <link rel="apple-touch-icon" sizes="180x180" href="files/icons/apple-touch-icon.png"/>
                 <link rel="icon" type="image/png" sizes="32x32"
-                    href="/files/icons/favicon-32x32.png"/>
+                    href="files/icons/favicon-32x32.png"/>
                 <link rel="icon" type="image/png" sizes="16x16"
-                    href="/files/icons/favicon-16x16.png"/>
-                <link rel="mask-icon" href="/files/icons/safari-pinned-tab.svg"/>
-                <link rel="shortcut icon" href="/files/icons/favicon.ico"/>
+                    href="files/icons/favicon-16x16.png"/>
+                <link rel="mask-icon" href="files/icons/safari-pinned-tab.svg"/>
+                <link rel="shortcut icon" href="files/icons/favicon.ico"/>
                 <meta name="msapplication-TileColor" content="#ffffff"/>
-                <meta name="msapplication-config" content="/files/icons/browserconfig.xml"/>
+                <meta name="msapplication-config" content="files/icons/browserconfig.xml"/>
                 <meta name="theme-color" content="#059bbb"/>
                 <link rel="canonical">
                     <xsl:attribute name="href">
@@ -109,7 +114,7 @@
                     </xsl:attribute>
                 </link>
                 <link rel="stylesheet" href="files/system/css/style.css"/>
-                <link rel="stylesheet" href="files/system/css/page.css"/>
+                <!-- <link rel="stylesheet" href="files/system/css/page.css"/>  --> 
 
                 <title>
                     <xsl:value-of select="$title"/>
@@ -142,16 +147,9 @@
                                                 Bilder von Gemeinschaft, Geschlecht und Generation
                                                 in DDR-Schmalfilmen</a>
                                         </li>
-                                        <li>
+                                        <li class="active">
                                             <a href="die-grenze-filmen" title="Die Grenze filmen"
                                                 class="fadelink">Die Grenze filmen</a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="geschlechterverhaeltnisse-in-privaten-ddr-filmen"
-                                                title="Geschlechterverhältnisse in privaten DDR-Filmen"
-                                                class="fadelink">Geschlechterverhältnisse in
-                                                privaten DDR-Filmen</a>
                                         </li>
                                         <li>
                                             <a href="soziale-ungleichheit-und-hierarchien"
@@ -167,11 +165,9 @@
                                                 Fernsehen</a>
                                         </li>
                                         <li>
-                                            <a href="familiaere-stadtbilder"
-                                                title="Familiäre STADTBILDER. Zwischen Hintergrundrauschen und 
-                                            Postkartenmotiven"
-                                                class="fadelink">Familiäre STADTBILDER. Zwischen
-                                                Hintergrundrauschen und Postkartenmotiven</a>
+                                            <a href="familiaere-stadtbilder" 
+                                                title="Familiäre STADTBILDER. Zwischen Hintergrundrauschen und Postkartenmotiven" 
+                                                class="fadelink">Familiäre STADTBILDER. Zwischen Hintergrundrauschen und Postkartenmotiven</a>
                                         </li>
                                         <li>
                                             <a href="heiraten" title="Heiraten" class="fadelink"
@@ -212,6 +208,9 @@
                                                 title="Von Hühnern und Schweinen" class="fadelink"
                                                 >Von Hühnern und Schweinen</a>
                                         </li>
+                                        <li>
+                                            <a href="kleidung-und-mode" title="Kleidung und Mode in der DDR" class="fadelink">Kleidung und Mode in der DDR</a>
+                                        </li>
                                     </ul>
                                 </nav>
                             </div>
@@ -223,17 +222,16 @@
                                 <!-- responsive image -->
                                 <!-- wenn die Bilder stehen, generiere ich dann die verschiedenen Größen -->
                                 <picture>
-                                    <source srcset="files/images/hausbau.jpg"
+                                    <source srcset="files/images/fullwidth/grenze-500.jpg"
                                         media="(max-width:500px)"/>
-                                    <source srcset="files/images/hausbau.jpg"
-                                        media="(min-width:501px) and (max-width:800px)"/>
-                                    <source srcset="files/images/hausbau.jpg"
-                                        media="(min-width:801px) and (max-width:1024px)"/>
-                                    <source srcset="files/images/hausbau.jpg"
+                                    <source srcset="files/images/fullwidth/grenze-1000.jpg"
+                                        media="(min-width:501px) and (max-width:1024px)"/>
+                                    <source srcset="files/images/fullwidth/grenze.jpg"
                                         media="(min-width:1025px)"/>
-                                    <img src="files/images/hausbau.jpg" width="1500" height="800"
+                                    <img src="files/images/fullwidth/grenze.jpg" width="1500" height="800"
                                         alt="Die DDR im Schmalfilm Bild"/>
                                 </picture>
+                                
                                 <div class="headline">
                                     <div class="center">
                                         <!-- Titel im Bild -->
@@ -249,7 +247,9 @@
                         </div>
                         <div class="center">
                             <article>
-                                <xsl:apply-templates select="//tei:docTitle"/>
+                                <div class="article_headline">
+                                    <xsl:apply-templates select="//tei:docTitle"/>
+                                </div>
 
                                 <div class="clearfix">
                                     <!-- Anfang clearfix wegen float -->
@@ -286,17 +286,7 @@
                                                                         </xsl:attribute>
                                                                     </xsl:if>
                                                                     <xsl:value-of select="." />
-                                                                   <!-- alternative Überschrift 2. Ordnung auf kursiv setzen
-                                                                    <xsl:choose>
-                                                                        <xsl:when test="parent::tei:div[parent::tei:div]">
-                                                                            <i><xsl:value-of select="."/></i>
-                                                                        </xsl:when>
-                                                                        <xsl:otherwise>
-                                                                            <xsl:value-of select="."/>
-                                                                        </xsl:otherwise>
-                                                                    </xsl:choose>
-                                                                    -->
-                                                                </xsl:element>
+                                                               </xsl:element>
                                                             </li>
                                                         </xsl:for-each>
                                                     </ul>
@@ -431,22 +421,28 @@
                 <div class="nav_trans transit"/>
 
                 <script src="files/system/js/main.js"/>
+                
                 <script>
-                    // onscroll fadeIn und mehr
+                    <xsl:text>// onscroll fadeIn und mehr</xsl:text>
                     $('body').delegate('.check', 'inview', function(event, visible) {
                     if (visible) { $(this).addClass('show'); } 
                     else $(this).removeClass('show');
                     });	
                     $('p,h1,h2,h3,figure').addClass('check fade_in');
-                    // fussnoten	
+                    <xsl:text>// fussnoten</xsl:text>	
                     $("a.fn").click(function () { var ziel = $(this).attr('href'); scroller(ziel); return false; });
                     $(".footnote2 a").click(function () { var ziel = $(this).attr('href'); scroller100(ziel); return false; });
-                    // inhalt
+                    <xsl:text>// inhalt</xsl:text>
                     $(".inhalt button").click(function () { $('#clipliste').slideToggle(); $(this).toggleClass("active"); });
-                    // headline animation
+                    $(".abstract button").click(function () { $('#abstract').slideToggle(); $(this).toggleClass("active"); });
+                    <xsl:text>// headline animation</xsl:text>
                     var headline_bottom = $(".headline").position().top;
-                    function home_parallax(){ var scrolled = $(window).scrollTop(); $('.headline').css('top', headline_bottom+(scrolled * 0.15) + 'px'); }
-                    $(window).scroll(function(e){ home_parallax(); });
+                    $(window).scroll(function(e){ 
+                    var scrolled = $(window).scrollTop();
+                    if (scrolled > 2) { $('.headline').css('top', headline_bottom+(scrolled * 0.15) + 'px'); }						
+                    });                    
+                    <xsl:text>// index remove sticky</xsl:text>
+                    <xsl:comment>if (windowHeight &lt; 900) { $('.author_content').css( "position", "relative" );} </xsl:comment>
                 </script>
             </body>
         </html>
@@ -470,12 +466,19 @@
             <xsl:if test="@xml:id">
                 <xsl:attribute name="id">
                     <xsl:value-of select="@xml:id"/>
-                </xsl:attribute>
-                <xsl:apply-templates/>
+                </xsl:attribute>                
             </xsl:if>
+            <!-- speziell für p in author info -->
+            <xsl:if test="parent::tei:div[@type='author-info']">
+                <xsl:attribute name="class">
+                    <xsl:text>no_style</xsl:text>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
     
+       
     <xsl:template match="tei:hi">
         <xsl:choose>
             <xsl:when test="@rend = 'italic'">
@@ -569,12 +572,17 @@
     </xsl:template>
     
     <!-- how to show information about the author in backmatter -->
+    <!-- see also if clause in template for tei:p -->
     <xsl:template match="tei:div[@type='author-info']">
         <div id="autor_in">
-            <h4>Über die Autorin</h4>
+            <h4>
+                <xsl:text>Über </xsl:text>
+                <xsl:value-of select="//tei:front//tei:docAuthor"/>
+            </h4>
             <xsl:apply-templates/>
         </div>
     </xsl:template>
+    
     
     <!-- how to format abstract -->
     <xsl:template match="//tei:div[@type='abstract']/tei:p">

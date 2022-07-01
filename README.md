@@ -3,7 +3,7 @@
 [![GitHub release](https://img.shields.io/github/release/TEIC/Stylesheets.svg)](https://github.com/TEIC/Stylesheets/releases)
 [![Stylesheets Tests](https://github.com/TEIC/Stylesheets/actions/workflows/test.yml/badge.svg)](https://github.com/TEIC/Stylesheets/actions/workflows/test.yml)
 
-This Fork adds a customized profile for a Website with research essays on the Open Memory Box. Created within the BMBF sponsored Reserach Project: "Das mediale Erbe der DDR" (https://medienerbe-ddr.de)
+This Fork adds a customized profile for a Website with research essays on private 8mm films of the former GDR: https://ddr-im-schmalfilm.de The films are digitized and publicly avaible in the Open Memory Box https://open-memory-box-de. Created within the BMBF sponsored Reserach Project: "Das mediale Erbe der DDR" (https://medienerbe-ddr.de)
 
 
 TEI XSL Stylesheets

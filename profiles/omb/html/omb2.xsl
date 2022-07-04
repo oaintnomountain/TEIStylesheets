@@ -147,10 +147,6 @@
                                                 Bilder von Gemeinschaft, Geschlecht und Generation
                                                 in DDR-Schmalfilmen</a>
                                         </li>
-                                        <li class="active">
-                                            <a href="die-grenze-filmen" title="Die Grenze filmen"
-                                                class="fadelink">Die Grenze filmen</a>
-                                        </li>
                                         <li>
                                             <a href="soziale-ungleichheit-und-hierarchien"
                                                 title="Soziale Ungleichheit und Hierarchien durch die Linse der Privatheit. Eine Spurensuche in den Filmen der Open Memory Box"
@@ -165,6 +161,30 @@
                                                 Fernsehen</a>
                                         </li>
                                         <li>
+                                            <a href="gemeinschaft-und-geselligkeit"
+                                                title="Gemeinschaft und Geselligkeit"
+                                                class="fadelink">Gemeinschaft und Geselligkeit</a>
+                                        </li>
+                                        <li>
+                                            <a href="kleidung-und-mode" title="Kleidung und Mode in der DDR" class="fadelink">Kleidung und Mode in der DDR</a>
+                                        </li>
+                                        <li>
+                                            <a href="visuelle-spuren-des-westens"
+                                                title="Visuelle Spuren des Westens auf DDR-Schmalfilmen"
+                                                class="fadelink">Visuelle Spuren des Westens auf
+                                                DDR-Schmalfilmen</a>
+                                        </li>
+                                        <li class="active">
+                                            <a href="die-grenze-filmen" title="Die Grenze filmen"
+                                                class="fadelink">Die Grenze filmen</a>
+                                        </li>
+                                        <li>
+                                            <a href="home-movies-heimat-and-tourism"
+                                                title="Home Movies, Heimat, and Tourism in the German Democratic Republic"
+                                                class="fadelink">Home Movies, Heimat, and Tourism in
+                                                the German Democratic Republic</a>
+                                        </li>
+                                        <li>
                                             <a href="familiaere-stadtbilder" 
                                                 title="Familiäre STADTBILDER. Zwischen Hintergrundrauschen und Postkartenmotiven" 
                                                 class="fadelink">Familiäre STADTBILDER. Zwischen Hintergrundrauschen und Postkartenmotiven</a>
@@ -174,29 +194,12 @@
                                                 >Heiraten</a>
                                         </li>
                                         <li>
-                                            <a href="visuelle-spuren-des-westens"
-                                                title="Visuelle Spuren des Westens auf DDR-Schmalfilmen"
-                                                class="fadelink">Visuelle Spuren des Westens auf
-                                                DDR-Schmalfilmen</a>
-                                        </li>
-                                        <li class="active">
                                             <a href="stein-auf-stein"
                                                 title="Stein auf Stein. Filme von Hausbau und Heimwerker*innen"
                                                 class="fadelink">Stein auf Stein. Filme von Hausbau
                                                 und Heimwerker*innen</a>
                                         </li>
-                                        <li>
-                                            <a href="home-movies-heimat-and-tourism"
-                                                title="Home Movies, Heimat, and Tourism in the German Democratic Republic"
-                                                class="fadelink">Home Movies, Heimat, and Tourism in
-                                                the German Democratic Republic</a>
-                                        </li>
-                                        <li>
-                                            <a href="gemeinschaft-und-geselligkeit"
-                                                title="Gemeinschaft und Geselligkeit"
-                                                class="fadelink">Gemeinschaft und Geselligkeit</a>
-                                        </li>
-                                        <li>
+                                       <li>
                                             <a href="und-immer-wieder-flamingos"
                                                 title="Und immer wieder Flamingos...: Der Zoo zwischen Privatheit, Aneignung und sozialistischer Inszenierung"
                                                 class="fadelink">Und immer wieder Flamingos...: Der
@@ -207,9 +210,6 @@
                                             <a href="von-huehnern-und-schweinen"
                                                 title="Von Hühnern und Schweinen" class="fadelink"
                                                 >Von Hühnern und Schweinen</a>
-                                        </li>
-                                        <li>
-                                            <a href="kleidung-und-mode" title="Kleidung und Mode in der DDR" class="fadelink">Kleidung und Mode in der DDR</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -316,47 +316,47 @@
                                             <xsl:apply-templates select="//tei:body/tei:div" />
                                         </div>
                                         <!-- Ende Text -->
- 
+                                        
+                                        <!-- Backmatter --> 
                                         <aside>
                                             <!-- Fußnoten, Anmerkungen, Bibliographie, Autor*in -->
-
-                                            <div id="fussnoten" class="footnote">
-                                                <h4>Anmerkungen</h4>
-                                                <ul class="footnote">
-                                                    <xsl:for-each
-                                                        select="tei:TEI/tei:text//tei:note[@place = 'foot']">
-                                                        
-                                                        <li class="footnote">
-                                                            <div class="footnote2">
-                                                                <xsl:attribute name="id">
-                                                                    <xsl:text>fn</xsl:text>
-                                                                    <xsl:number level="any"
-                                                                        count="tei:note[@place = 'foot']"/>
-                                                                </xsl:attribute>
-                                                                <a>
-                                                                    <xsl:attribute name="href">
-                                                                        <xsl:text>#fna</xsl:text>
+                                            <xsl:if test="//tei:text//tei:note[@place ='foot']">
+                                                <div id="fussnoten" class="footnote">
+                                                    <hr/>
+                                                    <h4>Anmerkungen</h4>
+                                                    <ul class="footnote">
+                                                        <xsl:for-each
+                                                            select="tei:TEI/tei:text//tei:note[@place = 'foot']">
+                                                            
+                                                            <li class="footnote">
+                                                                <div class="footnote2">
+                                                                    <xsl:attribute name="id">
+                                                                        <xsl:text>fn</xsl:text>
                                                                         <xsl:number level="any"
                                                                             count="tei:note[@place = 'foot']"/>
                                                                     </xsl:attribute>
-                                                                    <xsl:number level="any"
-                                                                        count="tei:note[@place = 'foot']"/>
-                                                                </a>
-                                                            </div>
-                                                            <div class="footnote3">
-                                                                <xsl:apply-templates/>
-                                                            </div>
-                                                        </li>
-                                                    </xsl:for-each>
-                                                </ul>
-                                            </div>
-                                            <!-- Bibliographie -->
-                                            <div class="bibliography">
-                                                <hr/>
-                                                <xsl:apply-templates
-                                                    select="/tei:TEI/tei:text/tei:body/tei:div/tei:div[@type = 'bibliography']"
-                                                />
-                                            </div>
+                                                                    <a>
+                                                                        <xsl:attribute name="href">
+                                                                            <xsl:text>#fna</xsl:text>
+                                                                            <xsl:number level="any"
+                                                                                count="tei:note[@place = 'foot']"/>
+                                                                        </xsl:attribute>
+                                                                        <xsl:number level="any"
+                                                                            count="tei:note[@place = 'foot']"/>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="footnote3">
+                                                                    <xsl:apply-templates/>
+                                                                </div>
+                                                            </li>
+                                                        </xsl:for-each>
+                                                    </ul>
+                                                </div>
+                                            </xsl:if>
+
+                                            <!-- Bibliographie -->                                           
+                                                <xsl:apply-templates select="//tei:back/tei:div[@type = 'bibliography']"/>
+                                            
                                             <!-- Autor*innenhinweis -->                                            
                                                 <xsl:apply-templates select="//tei:back/tei:div[@type = 'author-info']"/>
                                             
@@ -420,10 +420,10 @@
                 </div>
                 <div class="nav_trans transit"/>
 
-                <script src="files/system/js/main.js"/>
-                
+                <script src="files/system/js/main.js" />
+                    
                 <script>
-                    <xsl:text>// onscroll fadeIn und mehr</xsl:text>
+                    // onscroll fadeIn und mehr
                     $('body').delegate('.check', 'inview', function(event, visible) {
                     if (visible) { $(this).addClass('show'); } 
                     else $(this).removeClass('show');
@@ -441,7 +441,7 @@
                     var scrolled = $(window).scrollTop();
                     if (scrolled > 2) { $('.headline').css('top', headline_bottom+(scrolled * 0.15) + 'px'); }						
                     });                    
-                    <xsl:text>// index remove sticky</xsl:text>
+                    // index remove sticky
                     <xsl:comment>if (windowHeight &lt; 900) { $('.author_content').css( "position", "relative" );} </xsl:comment>
                 </script>
             </body>
@@ -583,6 +583,37 @@
         </div>
     </xsl:template>
     
+    <!-- how to show bibliography in backmatter -->
+    <xsl:template match="tei:div[@type='bibliography']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="//tei:div[@type='bibliography']/tei:listBibl">
+        <div class="bibliography">
+            <xsl:apply-templates select="tei:head"/>
+            <ul>
+                <xsl:apply-templates select="tei:bibl"/>
+            </ul>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="//tei:listBibl/tei:head">
+        <h4>
+            <xsl:apply-templates/>
+        </h4>
+    </xsl:template>
+    
+    <xsl:template match="//tei:listBibl/tei:bibl">
+        <li>
+            <xsl:apply-templates/>
+        </li>
+    </xsl:template>
+    
+    <xsl:template match="//tei:bibl/tei:title">
+        <i>
+            <xsl:apply-templates/>
+        </i>
+    </xsl:template>
     
     <!-- how to format abstract -->
     <xsl:template match="//tei:div[@type='abstract']/tei:p">

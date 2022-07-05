@@ -276,7 +276,7 @@
                                                                 <xsl:element name="a">
                                                                     <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
                                                                     <xsl:attribute name="onclick">
-                                                                        <xsl:text>scroller('#</xsl:text>
+                                                                        <xsl:text>scroller100('#</xsl:text>
                                                                         <xsl:value-of select="@xml:id"/>
                                                                         <xsl:text>');</xsl:text>
                                                                     </xsl:attribute>

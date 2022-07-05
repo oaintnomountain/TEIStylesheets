@@ -490,16 +490,18 @@
     <xsl:apply-templates mode="pass2" select="tei:body/*"/>
    </body>
    <back>
-    <div type="bibliography">
-     <listBibl>
-      <head rend="none">Bibliography</head>
-      <xsl:for-each select="//tei:p[@rend='bibliography' or @rend='Bibliographie']">
-       <bibl>
-        <xsl:apply-templates mode="pass2"/>
-       </bibl>
-      </xsl:for-each>
-     </listBibl>
-    </div>
+    <xsl:if test="//tei:p[@rend='bibliography' or @rend='Bibliographie']">
+     <div type="bibliography">
+      <listBibl>
+       <head rend="none">Bibliography</head>
+       <xsl:for-each select="//tei:p[@rend='bibliography' or @rend='Bibliographie']">
+        <bibl>
+         <xsl:apply-templates mode="pass2"/>
+        </bibl>
+       </xsl:for-each>
+      </listBibl>
+     </div>
+    </xsl:if>
     <div type="author-info">
      <xsl:for-each select="//tei:p[@rend='cv' or @rend='author-info']">
       <p>

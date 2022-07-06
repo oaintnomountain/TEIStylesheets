@@ -593,7 +593,7 @@
  </doc>
  
  <xsl:template match="tei:p[@rend='Videoblock' or @rend='videoblock']" mode="pass2">
-  <xsl:analyze-string select="." regex="\[{{1,2}}[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.: ]+\d)?[, ]*([Ss]top:? ?\d[\d\.: ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
+  <xsl:analyze-string select="." regex="\[{{1,2}}[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.:- ]+\d)?[, ]*([Ss]top:? ?\d[\d\.:- ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
    
    <xsl:matching-substring>
     <!-- extract variable values from analyzed string. We have to do it her because in xslt variables are only aviable to childs and siblings -->
@@ -623,14 +623,14 @@
     <xsl:variable name="start">
      <xsl:if test="regex-group(3)">
       <xsl:choose>
-       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
+       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})','$1h$2m$3s$4')"/>
        </xsl:when>
-       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
+       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2}).*','00h$1m$2s$3')"/>
        </xsl:when>
-       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+       <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.-](\d{2}).*','00h$1m$2s00')"/>
        </xsl:when>
       </xsl:choose>
      </xsl:if>
@@ -638,14 +638,14 @@
     <xsl:variable name="end">
      <xsl:if test="regex-group(4)">
       <xsl:choose>
-       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
+       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})','$1h$2m$3s$4')"/>
        </xsl:when>
-       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
+       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2}).*','00h$1m$2s$3')"/>
        </xsl:when>
-       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2})')">
-        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+       <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.-](\d{2})')">
+        <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.-](\d{2}).*','00h$1m$2s00')"/>
        </xsl:when>
       </xsl:choose>
      </xsl:if>
@@ -705,7 +705,7 @@
  <xsl:template match="tei:p//text()" mode="pass2">
   <xsl:choose>
    <xsl:when test=".,'\[ ?[Bb]ox:?.+?\]'">
-    <xsl:analyze-string select="." regex="\[{{1,2}} ?[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.: ]+\d)?[, ]*([Ss]top:? ?\d[\d\.: ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
+    <xsl:analyze-string select="." regex="\[{{1,2}} ?[Bb]ox:? ?(\d+)[, ]+[Rr]olle:? ?(\d+),? *([Ss]tart:? ?\d[\d\.:- ]+\d)?[, ]*([Ss]top:? ?\d[\d\.:- ]+\d)?[, ]*(#.+?)?\]{{1,2}}">
 
      <xsl:matching-substring>
       <!-- extract variable values from analyzed string. We have to do it her because in xslt variables are only aviable to childs and siblings -->
@@ -738,20 +738,20 @@
       <xsl:variable name="start">
        <xsl:if test="regex-group(3)">
         <xsl:choose>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})','$1h$2m$3s$4')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2}).*','00h0$1m$2s$3')"/>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.-](\d{1,2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.-](\d{1,2})[:\.-](\d{2}).*','00h0$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.-](\d{2}).*','00h$1m$2s00')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1,2})[:\.](\d{2}).*','00h0$1m$2s00')"/>
+         <xsl:when test="matches(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(3),'[Ss]tart:? ?(\d{1})[:\.-](\d{2}).*','00h0$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>
@@ -759,20 +759,20 @@
       <xsl:variable name="end">
        <xsl:if test="regex-group(4)">
         <xsl:choose>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})[:\.](\d{2})','$1h$2m$3s$4')"/>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})[:\.-](\d{2})','$1h$2m$3s$4')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})[:\.](\d{2}).*','00h$1m$2s$3')"/>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})[:\.-](\d{2}).*','00h$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2})')">
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.-](\d{1,2})[:\.-](\d{2})')">
           <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{1,2})[:\.](\d{2}).*','00h0$1m$2s$3')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h$1m$2s00')"/>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{2})[:\.-](\d{2}).*','00h$1m$2s00')"/>
          </xsl:when>
-         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.](\d{2})')">
-          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1,2})[:\.](\d{2}).*','00h0$1m$2s00')"/>
+         <xsl:when test="matches(regex-group(4),'[Ss]top:? ?(\d{1})[:\.-](\d{2})')">
+          <xsl:value-of select="replace(regex-group(4),'[Ss]top:? ?(\d{1})[:\.-](\d{2}).*','00h0$1m$2s00')"/>
          </xsl:when>
         </xsl:choose>
        </xsl:if>

@@ -125,10 +125,8 @@
                 <div class="wrap animsition">
                     <header class="header">
                         <div class="center clearfix logo_top">
-                            <a href="./" title="back to start" class="fadelink logo">Die DDR im
-                                Schmalfilm</a>
-                            <button class="hamburger hamburger--collapse" type="button"
-                                aria-label="Menu" aria-controls="navigation">
+                            <a href="./" title="back to start" class="fadelink logo">Die DDR im Schmalfilm</a>
+                            <button class="hamburger hamburger--collapse" type="button" aria-label="Menu" aria-controls="navigation">
                                 <span class="hamburger-box">
                                     <span class="hamburger-inner">&#160;</span>
                                 </span>
@@ -442,7 +440,7 @@
                     if (scrolled > 2) { $('.headline').css('top', headline_bottom+(scrolled * 0.15) + 'px'); }						
                     });                    
                     // index remove sticky
-                    <xsl:comment>if (windowHeight &lt; 900) { $('.author_content').css( "position", "relative" );} </xsl:comment>
+                    <xsl:comment>if (windowHeight &lt; 600) { $('.author_content').css( "position", "relative" );} </xsl:comment>
                 </script>
             </body>
         </html>
@@ -493,12 +491,21 @@
             <xsl:otherwise>
                 <xsl:apply-templates/>
             </xsl:otherwise>
-            
         </xsl:choose>
     </xsl:template>
     
     <xsl:template match="tei:seg">
         <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="tei:lb">
+        <br/>
+    </xsl:template>
+    
+    <xsl:template match="tei:epigraph">
+        <div class="epigraph">
+            <xsl:apply-templates/>
+        </div>
     </xsl:template>
 
     <!-- how to format Title, Subtitel and Suptitle -->
@@ -776,6 +783,32 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-
+    
+    <!-- how to handle graphic elements (basic handling, path need to be completed manually)-->
+    <xsl:template match="tei:graphic">
+        <picture>
+            <xsl:element name="source">
+                <xsl:attribute name="srcset">
+                    <xsl:value-of select="replace(@url,'media/image(.*)(\..*)','files/images/fullwidth/xxx-abb$1-500$2')"/>
+                </xsl:attribute>
+                <xsl:attribute name="media">(max-width:500px)</xsl:attribute>
+            </xsl:element>
+            <xsl:element name="source">
+                <xsl:attribute name="srcset">
+                    <xsl:value-of select="replace(@url,'media/image(.*)(\..*)','files/images/fullwidth/xxx-abb$1$2')"/>
+                </xsl:attribute>
+                <xsl:attribute name="media">(min-width:501px)</xsl:attribute>
+            </xsl:element>
+            <xsl:element name="img">
+                <xsl:attribute name="src">
+                    <xsl:value-of select="replace(@url,'media/image(.*)','files/images/fullwidth/xxx-abb$1')"/>
+                </xsl:attribute>
+                <xsl:attribute name="alt">
+                    <xsl:value-of select="tei:desc"/>
+                </xsl:attribute>
+            </xsl:element>
+        </picture>
+    </xsl:template>
+    
 
 </xsl:stylesheet>

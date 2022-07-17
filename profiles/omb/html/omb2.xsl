@@ -358,6 +358,21 @@
                                             <!-- Autor*innenhinweis -->                                            
                                                 <xsl:apply-templates select="//tei:back/tei:div[@type = 'author-info']"/>
                                             
+                                            <!-- Zitation -->
+                                                <div id="zitation">
+                                                    <h4>Zitation</h4>
+                                                    <p class="no_style">
+                                                        <xsl:apply-templates select="//tei:docAuthor"/>,
+                                                        <xsl:apply-templates select="//tei:front//tei:docTitle" mode="citation"/> 
+                                                        in Olaf Berg (Hg.), Die DDR im Schmalfilm. Blicke aus der Forschung auf die Open-Memory-Box, Postdam 2022, URL:
+                                                        <xsl:element name="a">
+                                                            <xsl:attribute name="href">https://ddr-im-schmalfilm.de/<xsl:value-of select="//tei:titleStmt/tei:title[@type='short']"/>
+                                                            </xsl:attribute>
+                                                            https://ddr-im-schmalfilm.de/<xsl:value-of select="//tei:titleStmt/tei:title[@type='short']"/>
+                                                        </xsl:element>
+                                                    </p>
+                                                </div>
+                                            
                                         </aside>
                                     </div>
                                     <!-- Ende content -->
@@ -546,6 +561,23 @@
         </span>
     </xsl:template>
     
+    <!-- how to format title for citation -->
+    <xsl:template match="tei:docTitle" mode="citation">
+        
+            <xsl:apply-templates mode="citation"/>
+                
+    </xsl:template>
+    
+    <xsl:template match="tei:titlePart" mode="citation">
+        <xsl:element name="span">
+            <xsl:apply-templates/>
+            <xsl:choose>
+                <xsl:when test=".[following-sibling::tei:titlePart]">.</xsl:when>
+                <xsl:otherwise>,</xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>    
+    </xsl:template>
+    
 
     <!-- how to format section titles in table of content -->
     <xsl:template match="tei:div/tei:head" mode="inhaltsvz">
@@ -584,7 +616,7 @@
         <div id="autor_in">
             <h4>
                 <xsl:text>Über </xsl:text>
-                <xsl:value-of select="//tei:front//tei:docAuthor"/>
+                <xsl:apply-templates select="//tei:front//tei:docAuthor"/>
             </h4>
             <xsl:apply-templates/>
         </div>

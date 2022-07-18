@@ -717,7 +717,7 @@
     </xsl:template>
 
     <!-- How to handle Citation Links to OMB Videoclips -->
-    <xsl:template match="tei:figure[@place = 'column' and @type = 'omb']">
+    <xsl:template match="tei:figure[@type = 'omb' and @place = 'column']">
         <figure>
             <xsl:apply-templates select="tei:media"/>
             <xsl:choose>
@@ -779,8 +779,10 @@
                     <xsl:value-of select="@url"/>
                     <xsl:text>#t=</xsl:text>
                     <xsl:value-of select="replace(@start, 'tc:(\d\d)h(\d\d)m(\d\d)s(\d\d)', '$1:$2:$3.$4')"/>
-                    <xsl:text>,</xsl:text>
-                    <xsl:value-of select="replace(@end, 'tc:(\d\d)h(\d\d)m(\d\d)s(\d\d)', '$1:$2:$3.$4')"/>
+                    <xsl:if test="@end">
+                        <xsl:text>,</xsl:text>
+                        <xsl:value-of select="replace(@end, 'tc:(\d\d)h(\d\d)m(\d\d)s(\d\d)', '$1:$2:$3.$4')"/>                        
+                    </xsl:if>
                 </xsl:attribute>
                 <xsl:attribute name="type">video/mp4</xsl:attribute>
             </xsl:element>

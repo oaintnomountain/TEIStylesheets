@@ -320,7 +320,6 @@
                                             <!-- Fußnoten, Anmerkungen, Bibliographie, Autor*in -->
                                             <xsl:if test="//tei:text//tei:note[@place ='foot']">
                                                 <div id="fussnoten" class="footnote">
-                                                    <hr/>
                                                     <h4>Anmerkungen</h4>
                                                     <ul class="footnote">
                                                         <xsl:for-each
